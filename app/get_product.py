@@ -26,28 +26,11 @@ def main():
         StructField("prix", DoubleType(), True)
     ])
     
-    # Schéma des données utilisateur (pour topic2, comme mentionné dans le commentaire initial)
-    user_schema = StructType([
-        StructField("user_id", IntegerType(), True),
-        StructField("nom", StringType(), True),
-        StructField("email", StringType(), True),
-        StructField("date_inscription", TimestampType(), True)
-    ])
-    
     # Configurer les flux de lecture Kafka pour les produits (topic1)
     df_produits = spark.readStream \
         .format("kafka") \
         .option("kafka.bootstrap.servers", "kafka:9092") \
         .option("subscribe", "topic1") \
-        .option("startingOffsets", "latest") \
-        .option("failOnDataLoss", "false") \
-        .load()
-    
-    # Configurer les flux de lecture Kafka pour les utilisateurs (topic2)
-    df_users = spark.readStream \
-        .format("kafka") \
-        .option("kafka.bootstrap.servers", "kafka:9092") \
-        .option("subscribe", "topic2") \
         .option("startingOffsets", "latest") \
         .option("failOnDataLoss", "false") \
         .load()
