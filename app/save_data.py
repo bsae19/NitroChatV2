@@ -1,127 +1,153 @@
+#!/usr/bin/env python3
+# Script consommateur Spark qui lit depuis Kafka et sauvegarde dans Hive avec génération d'ID unique (UUID)
+
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json, col, when, expr, lit, current_timestamp
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, TimestampType
+from pyspark.sql.functions import from_json, col, when, current_timestamp, udf
+from pyspark.sql.types import StructType, StructField, StringType, TimestampType
+import uuid
+
+@udf(returnType=StringType())
+def uuid_udf():
+    return str(uuid.uuid4())
+
 
 def main():
     spark = SparkSession.builder \
-        .appName("KafkaToHiveConsumer") \
+        .appName("KafkaUsersAndMessagesToHive") \
         .enableHiveSupport() \
+        .config("spark.sql.warehouse.dir", "/user/hive/warehouse") \
         .config("hive.metastore.uris", "thrift://hive-metastore:9083") \
         .config("spark.sql.session.timeZone", "UTC") \
+        .config("hive.exec.dynamic.partition", "true") \
+        .config("hive.exec.dynamic.partition.mode", "nonstrict") \
         .getOrCreate()
 
     spark.sparkContext.setLogLevel("WARN")
 
-    # Schémas
     user_schema = StructType([
-        StructField("user_id", IntegerType(), True),
         StructField("nom", StringType(), True),
         StructField("email", StringType(), True),
+        StructField("password", StringType(), True),
         StructField("date_inscription", TimestampType(), True)
     ])
 
     message_schema = StructType([
-        StructField("id", StringType(), True),
         StructField("message", StringType(), True),
-        StructField("Created_At", StringType(), True),
+        StructField("Created_At", TimestampType(), True),
         StructField("user_id", StringType(), True),
         StructField("chat_id", StringType(), True),
         StructField("type", StringType(), True)
+        # StructField("valide", StringType(), True)
     ])
 
-    # Lecture Kafka
-    def read_kafka(topic):
-        return spark.readStream \
-            .format("kafka") \
-            .option("kafka.bootstrap.servers", "kafka:9092") \
-            .option("subscribe", topic) \
-            .option("startingOffsets", "latest") \
-            .option("failOnDataLoss", "false") \
-            .load() \
-            .selectExpr("CAST(key AS STRING)", "CAST(value AS STRING) AS raw_data")
+    df_users = spark.readStream \
+        .format("kafka") \
+        .option("kafka.bootstrap.servers", "kafka:9092") \
+        .option("subscribe", "save_user") \
+        .option("startingOffsets", "latest") \
+        .option("failOnDataLoss", "false") \
+        .load()
 
-    users_df = read_kafka("topic2")
-    messages_df = read_kafka("message_ia")
+    df_messages = spark.readStream \
+        .format("kafka") \
+        .option("kafka.bootstrap.servers", "kafka:9092") \
+        .option("subscribe", "message_ia") \
+        .option("startingOffsets", "latest") \
+        .option("failOnDataLoss", "false") \
+        .load()
 
-    # Fonctions de traitement par batch
-    def process_batch(df, schema, table_name, error_table, partitioned=False):
-        def process(df, batch_id):
-            try:
-                if df.isEmpty():
-                    print(f"\n--- BATCH {batch_id} {table_name.upper()} VIDE ---")
-                    return
+    json_df_users = df_users.selectExpr("CAST(value AS STRING) AS raw_data")
+    json_df_messages = df_messages.selectExpr("CAST(value AS STRING) AS raw_data")
 
-                parsed = df.select(
-                    col("raw_data"),
-                    from_json(col("raw_data"), schema, {"mode": "PERMISSIVE", "columnNameOfCorruptRecord": "corrupt_record"}).alias("data"),
-                    current_timestamp().alias("processed_time")
-                )
+    def process_generic_batch(batch_df, batch_id, schema, table, error_table):
+        try:
+            if batch_df.isEmpty():
+                print(f"\n--- BATCH {batch_id} ({table.upper()}) VIDE ---")
+                return
 
-                final = parsed.select("data.*", when(col("data.*").isNull(), col("raw_data")).alias("corrupt_record"), col("processed_time"))
+            print(f"\n--- DONNÉES BRUTES ({table.upper()}) (BATCH {batch_id}) ---")
+            batch_df.select("raw_data").show(5, truncate=False)
 
-                valid = final.filter(col(final.columns[0]).isNotNull())
-                invalid = final.filter(col(final.columns[0]).isNull())
+            parsed_df = batch_df.select(
+                from_json(col("raw_data"), schema, {"mode": "PERMISSIVE", "columnNameOfCorruptRecord": "corrupt_record"}).alias("data"),
+                col("raw_data"),
+                current_timestamp().alias("processed_time")
+            )
 
-                if valid.count() > 0:
-                    spark.sql(f"""
-                        CREATE TABLE IF NOT EXISTS default.{table_name} (
-                            {', '.join([f'{f.name} {f.dataType.simpleString()}' for f in schema.fields])}
-                        ) {'PARTITIONED BY (year INT, month INT, day INT)' if partitioned else ''}
-                        USING hive
-                    """)
+            final_df = parsed_df.select(
+                uuid_udf().alias("id"),
+                *[col(f"data.{f.name}") for f in schema.fields],
+                when(col(f"data.{schema.fields[0].name}").isNull(), col("raw_data")).alias("corrupt_record"),
+                col("processed_time")
+            )
 
-                    if partitioned:
-                        valid = valid.withColumn("year", expr("year(processed_time)")) \
-                                     .withColumn("month", expr("month(processed_time)")) \
-                                     .withColumn("day", expr("dayofmonth(processed_time)"))
-                        valid.write.format("hive").mode("append").partitionBy("year", "month", "day").insertInto(f"default.{table_name}")
-                    else:
-                        valid.write.format("hive").mode("append").insertInto(f"default.{table_name}")
+            valid_df = final_df.filter(col("corrupt_record").isNull())
+            invalid_df = final_df.filter(col("corrupt_record").isNotNull())
 
-                    print(f"✓ {valid.count()} enregistrements insérés dans {table_name}")
+            valid_cnt = valid_df.count()
+            invalid_cnt = invalid_df.count()
 
-                if invalid.count() > 0:
-                    spark.sql(f"""
-                        CREATE TABLE IF NOT EXISTS default.{error_table} (
-                            corrupt_record STRING,
-                            processed_time TIMESTAMP
-                        )
-                        USING hive
-                    """)
-                    invalid.select("corrupt_record", "processed_time").write \
-                        .format("hive") \
-                        .mode("append") \
-                        .insertInto(f"default.{error_table}")
-                    print(f"✓ {invalid.count()} erreurs insérées dans {error_table}")
+            print(f"Enregistrements: {valid_cnt} valides, {invalid_cnt} invalides")
 
-            except Exception as e:
-                import traceback
-                print(f"Erreur batch {table_name}: {str(e)}")
-                print(traceback.format_exc())
-        return process
+            if valid_cnt > 0:
+                print("Échantillon des données valides:")
+                valid_df.select("*").show(3, truncate=False)
+                spark.sql(f"""
+                    CREATE TABLE IF NOT EXISTS default.{table} (
+                        id STRING,
+                        {', '.join([f'{f.name} {f.dataType.simpleString()}' for f in schema.fields])}
+                    )
+                    USING hive
+                """)
+                valid_df.select(["id"] + [f.name for f in schema.fields]) \
+                    .write.format("hive").mode("append").insertInto(f"default.{table}")
+                print(f"✓ Enregistrements insérés dans la table '{table}'")
 
-    # Streams
-    users_stream = users_df.writeStream.foreachBatch(
-        process_batch(users_df, user_schema, "users", "users_errors", partitioned=True)
-    ).outputMode("append").option("checkpointLocation", "/tmp/checkpoints/users").trigger(processingTime="30 seconds").start()
+            if invalid_cnt > 0:
+                print(f"⚠️ {invalid_cnt} enregistrements invalides détectés:")
+                invalid_df.select("corrupt_record").show(3, truncate=False)
+                spark.sql(f"""
+                    CREATE TABLE IF NOT EXISTS default.{error_table} (
+                        corrupt_record STRING,
+                        processed_time TIMESTAMP
+                    )
+                    USING hive
+                """)
+                invalid_df.select("corrupt_record", "processed_time") \
+                    .write.format("hive").mode("append").insertInto(f"default.{error_table}")
+                print(f"✓ Enregistrements invalides sauvegardés dans '{error_table}'")
 
-    messages_stream = messages_df.writeStream.foreachBatch(
-        process_batch(messages_df, message_schema, "messages", "messages_errors")
-    ).outputMode("append").option("checkpointLocation", "/tmp/checkpoints/messages").trigger(processingTime="30 seconds").start()
+        except Exception as e:
+            import traceback
+            print(f"Erreur critique dans batch {table}: {str(e)}")
+            print(traceback.format_exc())
 
-    print("\n=== Spark Kafka -> Hive pipeline lancé ===")
-    print("- topic2 => users")
-    print("- message_ia => messages")
+    users_stream = json_df_users.writeStream \
+        .foreachBatch(lambda df, bid: process_generic_batch(df, bid, user_schema, "users", "users_errors")) \
+        .outputMode("append") \
+        .option("checkpointLocation", "/tmp/checkpoints/users") \
+        .trigger(processingTime="30 seconds") \
+        .start()
+
+    messages_stream = json_df_messages.writeStream \
+        .foreachBatch(lambda df, bid: process_generic_batch(df, bid, message_schema, "messages", "messages_errors")) \
+        .outputMode("append") \
+        .option("checkpointLocation", "/tmp/checkpoints/messages") \
+        .trigger(processingTime="30 seconds") \
+        .start()
+
+    print("=== Stream Kafka -> Hive lancé pour utilisateurs et messages ===")
 
     try:
         spark.streams.awaitAnyTermination()
     except KeyboardInterrupt:
         users_stream.stop()
         messages_stream.stop()
-        print("\nArrêt des streams Spark.")
+        print("Stream arrêté.")
     finally:
         spark.stop()
-        print("Session Spark arrêtée.")
+        print("Session Spark terminée.")
+
 
 if __name__ == "__main__":
     main()
