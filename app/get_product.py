@@ -99,15 +99,15 @@ def main():
                 try:
                     # Créer la table si elle n'existe pas
                     spark.sql("""
-    CREATE EXTERNAL TABLE IF NOT EXISTS default.produits2 (
-        produit_id INT,
-        nom STRING,
-        categorie STRING,
-        prix DOUBLE
-        )
-    USING hive
-    LOCATION 'hdfs://namenode:8020/user/hive/warehouse/produits2'
-""")
+                              CREATE EXTERNAL TABLE IF NOT EXISTS default.produits2 (
+                              produit_id INT,
+                              nom STRING,
+                              categorie STRING,
+                              prix DOUBLE
+                              )
+                              USING hive
+                              LOCATION 'hdfs://namenode:8020/user/hive/warehouse/produits2'
+                              """)
                     
                     
                     

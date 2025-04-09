@@ -1,4 +1,5 @@
 services:
+  
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
     volumes:
@@ -9,6 +10,7 @@ services:
       - ./hadoop-hive.env
     ports:
       - "50070:50070"
+  
   datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
     volumes:
@@ -19,6 +21,7 @@ services:
       SERVICE_PRECONDITION: "namenode:50070"
     ports:
       - "50075:50075"
+  
   hive-server:
     image: bde2020/hive:2.3.2-postgresql-metastore
     env_file:
@@ -28,6 +31,7 @@ services:
       SERVICE_PRECONDITION: "hive-metastore:9083"
     ports:
       - "10000:10000"
+  
   hive-metastore:
     image: bde2020/hive:2.3.2-postgresql-metastore
     env_file:
@@ -37,8 +41,10 @@ services:
       SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432"
     ports:
       - "9083:9083"
+  
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
+  
   kafka:
     image: wurstmeister/kafka
     container_name: kafka
@@ -54,11 +60,13 @@ services:
       KAFKA_LOG_RETENTION_BYTES: 1073741824
     depends_on:
       - zookeeper
+  
   zookeeper:
     image: wurstmeister/zookeeper
     container_name: zookeeper
     ports:
       - "2181:2181"
+  
   postgres-airflow:
     image: postgres:15
     container_name: postgres-airflow
@@ -172,6 +180,7 @@ services:
       - FLASK_ENV=development
     depends_on:
       - nifi
+  
   backend:
     build: ./back
     container_name: back
