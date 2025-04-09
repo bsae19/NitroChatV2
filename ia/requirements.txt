@@ -1,0 +1,9 @@
+flask==3.0.2
+Werkzeug==3.0.2
+kafka-python==2.0.2
+transformers
+tensorflow
+tf-keras
+tiktoken
+sentencepiece
+confluent-kafka
