@@ -56,7 +56,7 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://:9092,INTERNAL://:9093
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092, INTERNAL://kafka:9093
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_CREATE_TOPICS: "save_user:1:1,message_ia:1:1"
+      KAFKA_CREATE_TOPICS: "send_all_messages:1:1,check_message:1:1,send_message:1:1,ia_message:1:1,get_all_messages:1:1,register:1:1,login:1:1,send_users:1:1,get_users:1:1"
       KAFKA_LOG_RETENTION_BYTES: 1073741824
     depends_on:
       - zookeeper
@@ -164,6 +164,14 @@ services:
       - "8443:8443"
     environment:
       - NIFI_WEB_HTTP_PORT=8080
+    volumes:
+      - ./nifi/conf:/opt/nifi/nifi-current/conf
+      - ./nifi/content_repository:/opt/nifi/nifi-current/content_repository
+      - ./nifi/database_repository:/opt/nifi/nifi-current/database_repository
+      - ./nifi/flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+      - ./nifi/logs:/opt/nifi/nifi-current/logs
+      - ./nifi/provenance_repository:/opt/nifi/nifi-current/provenance_repository
+      - ./nifi/state:/opt/nifi/nifi-current/state
     depends_on:
       - kafka
   
