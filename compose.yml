@@ -194,12 +194,12 @@ services:
       - frontend
 
   frontend:
-    build: ./front 
+    build: ./frontend
     container_name: front
     ports:
       - "3000:3000"
     volumes:
-      - ./front:/app
+      - ./frontend:/app
       - /app/node_modules
 
 volumes:
