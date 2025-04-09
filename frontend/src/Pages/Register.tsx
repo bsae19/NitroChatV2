@@ -80,7 +80,7 @@ const Register: React.FC = () => {
             
             <div className="text-center text-sm text-gray-600 mt-4">
               <span>Déjà inscrit ? </span>
-              <Link to="/auth" className="text-blue-600 font-medium hover:underline">
+              <Link to="/" className="text-blue-600 font-medium hover:underline">
                 Connectez-vous
               </Link>
             </div>

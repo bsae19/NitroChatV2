@@ -40,7 +40,7 @@ const ResetPassword: React.FC = () => {
             </Button>
             
             <Link 
-              to="/auth" 
+              to="/" 
               className="flex items-center justify-center text-sm text-gray-600 mt-6 hover:text-blue-600 transition-colors"
             >
               <FaArrowLeft className="mr-2" />
