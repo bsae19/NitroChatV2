@@ -37,7 +37,7 @@ def exec_ia(data):
     flask.logger.info(f"Predicted class: {predicted_class}")
     flask.logger.info(f"Probabilities: {predicted_label}")
     data["type"] = predicted_label
-    producer.send("message_ia", json.dumps(data))
+    producer.send("ia_message", json.dumps(data))
     producer.flush()
 
 if __name__ == '__main__':
