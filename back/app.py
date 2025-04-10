@@ -1,100 +1,119 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-from kafka import KafkaConsumer, KafkaProducer
+from kafka import KafkaProducer
 import json
-from datetime import datetime
 import random
+from datetime import datetime
+import asyncio
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:5000"}})
+app.config['JWT_SECRET_KEY'] = 'super-secret'
+jwt = JWTManager(app)
 KAFKA_SERVER = 'kafka:9092'
-MESSAGES_TOPIC = 'message'
-MESSAGES_IA_TOPIC = 'message_ia'
-MESSAGES_GET_TOPIC = 'get_messages'
-MESSAGES_POST_TOPIC = 'post_messages'
+SEND_ALL_MESSAGES_TOPIC = 'send_all_messages'
+CHECK_MESSAGE_TOPIC = 'check_message'
+SEND_MESSAGE_TOPIC = 'send_message'
+REGISTER_TOPIC = 'register'
+SEND_USERS_TOPIC = 'send_users'
+GET_ALL_MESSAGES_TOPIC = 'get_all_messages'
+GET_USERS_TOPIC = 'get_users'
+IA_MESSAGE_TOPIC = 'ia_message'
+producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+users = {}
 
-messages_cache = {}
-# contacts_cache = []
 
-producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
-                         value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-    
-@app.route('/api/messages', methods=['POST'])
-def send_message():
-    app.logger.info("get data")
-    data = request.json
-    try:
-        message = {
-            'id': str(random.randint(0, 100000000000)),
-            'user_id': data['user_id'],
-            'message': data['message'],
-            'type': '',
-            'chat_id': '0',
-            'Created_At': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }
-        app.logger.info(message)
-        messages_consumer = KafkaConsumer(
-            MESSAGES_IA_TOPIC,
-            bootstrap_servers=KAFKA_SERVER,
-            value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-            auto_offset_reset='earliest'
-        )
-        app.logger.info(MESSAGES_TOPIC)
+# Mes 5 topics KAFKA
 
-        # Envoie le message à Kafka
-        producer.send(MESSAGES_TOPIC, message)
-        producer.flush()
-        response=None
-        try:
-            for msg in messages_consumer:
-                response = json.loads(msg.value)
-                app.logger.info(response)
-                if response["id"] == message["id"]:
-                    messages_consumer.close() 
-        finally:
-            messages_consumer.close()
-        if response:
-            # Mise à jour du cache local
-            if message['chat_id'] not in messages_cache:
-                messages_cache[message['chat_id']] = []
-            messages_cache[message['chat_id']].append(message)
-
-            return jsonify({'status': 'success', 'message': response}), 201
-
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 400
-
-@app.route('/api/messages/<string:chat_id>')
-def get_messages(chat_id):
-    app.logger.info("get all data")
-    messages_consumer = KafkaConsumer(
-            MESSAGES_GET_TOPIC,
-            bootstrap_servers=KAFKA_SERVER,
-            value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-            auto_offset_reset='earliest'
-        )
-
-    
-    producer.send(MESSAGES_POST_TOPIC, {"chat_id": chat_id,"user_id":""})
+@app.route('/api/register', methods=['POST'])
+def register():
+    d = request.json
+    email = d.get('email', '')
+    password = d.get('password', '')
+    nom = d.get('nom', '')
+    date_inscription = d.get('date_inscription', '')
+    if email in users:
+        return jsonify({'msg': 'User already exists'}), 400
+    users[email] = password
+    producer.send(REGISTER_TOPIC, d)
     producer.flush()
-    response=None
-    try:
-        for msg in messages_consumer:
-            response = msg.value
-            app.logger.info(response)
-            if response["chat_id"] == chat_id:
-                messages_consumer.close()
-                
-                return jsonify(response), 200
-    finally:
-        messages_consumer.close()
-    if response:
-        # Mise à jour du cache local
-        if response['chat_id'] not in messages_cache:
-            messages_cache[response['chat_id']] = []
-        messages_cache[response['chat_id']]= messages_cache[response['chat_id']] + response["message"]
-        messages = messages_cache[chat_id]
-        return jsonify(messages)
+    return jsonify({'msg': 'User registered successfully'}), 200
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    d = request.json
+    email = d.get('email', '')
+    password = d.get('password', '')
+    if email not in users or users[email] != password:
+        return jsonify({'msg': 'Bad email or password'}), 401
+    access_token = create_access_token(identity=email)
+    return jsonify({'access_token': access_token}), 200
+
+@app.route('/api/send_all_messages', methods=['POST'])
+@jwt_required()
+def send_all_messages():
+    d = request.json
+    producer.send(SEND_ALL_MESSAGES_TOPIC, d)
+    producer.flush()
+    return jsonify({'status': 'ok'}), 200
+
+@app.route('/api/check_message', methods=['POST'])
+@jwt_required()
+def check_message():
+    d = request.json
+    producer.send(CHECK_MESSAGE_TOPIC, d)
+    producer.flush()
+    return jsonify({'status': 'ok'}), 200
+
+@app.route('/api/send_message', methods=['POST'])
+@jwt_required()
+def send_message():
+    d = request.json
+    r = {
+        'id': str(random.randint(0, 999999999999)),
+        'user_id': d.get('user_id', ''),
+        'message': d.get('message', ''),
+        'type': '',
+        'chat_id': '0',
+        'Created_At': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }
+    producer.send(SEND_MESSAGE_TOPIC, r)
+    producer.flush()
+    return jsonify({'status': 'ok', 'payload': r}), 200
+
+@app.route('/api/send_users', methods=['POST'])
+@jwt_required()
+def send_users():
+    d = request.json
+    producer.send(SEND_USERS_TOPIC, d)
+    producer.flush()
+    return jsonify({'status': 'ok'}), 200
+
+
+
+ # Ecoute HTTP DE NIFI   
+
+@app.route('/api/get_all_messages', methods=['POST'])
+@jwt_required()
+async def get_all_messages():
+    d = request.json
+    await asyncio.sleep(0)
+    return jsonify({'status': 'ok', 'data': d}), 200
+
+@app.route('/api/get_users', methods=['POST'])
+@jwt_required()
+async def get_users():
+    d = request.json
+    await asyncio.sleep(0)
+    return jsonify({'status': 'ok', 'data': d}), 200
+
+@app.route('/api/ia_message', methods=['POST'])
+@jwt_required()
+async def ia_message():
+    d = request.json
+    await asyncio.sleep(0)
+    return jsonify({'status': 'ok', 'data': d}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
