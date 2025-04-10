@@ -17,7 +17,7 @@ default_args = {
 KAFKA_CONFIG = {
     'bootstrap.servers': 'kafka:9092',
 }
-KAFKA_TOPIC = 'save_user'
+KAFKA_TOPIC = 'register'
 
 def send_random_users_to_kafka():
     producer = Producer(KAFKA_CONFIG)
