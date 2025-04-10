@@ -1,2 +1,6 @@
 2025-04-10 06:53:05,680 INFO [main] org.apache.nifi.bootstrap.Command Application Process [45] termination requested
 2025-04-10 06:53:12,640 INFO [main] org.apache.nifi.bootstrap.Command Application Process [45] termination completed
+2025-04-10 09:58:39,238 INFO [main] org.apache.nifi.bootstrap.Command Application Process [44] termination requested
+2025-04-10 09:58:41,071 INFO [main] org.apache.nifi.bootstrap.Command Application Process [44] termination completed
+2025-04-10 10:25:00,753 INFO [main] org.apache.nifi.bootstrap.Command Application Process [75] termination requested
+2025-04-10 10:25:03,023 INFO [main] org.apache.nifi.bootstrap.Command Application Process [75] termination completed
