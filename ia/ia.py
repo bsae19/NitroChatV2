@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
-from transformers import TFAutoModelForSequenceClassification, CamembertTokenizer
+from transformers import TFAutoModelForSequenceClassification, CamembertTokenizer, TrainingArguments, Trainer
 import tensorflow as tf
 from kafka import KafkaProducer
 import json
+from pyhive import hive
+import os
 
 
 # Load the saved model and tokenizer
@@ -39,6 +41,59 @@ def exec_ia(data):
     data["type"] = predicted_label
     producer.send("ia_message", json.dumps(data))
     producer.flush()
+
+@flask.route('/train', methods=['POST'])
+def retrain_model():
+    flask.logger.info("Starting training pipeline")
+
+    try:
+        conn = hive.Connection(host='hive-server', port='10000', database='default', auth='NONE')
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT id_message FROM message_metadata WHERE valide = 'true'")
+        ids = [row[0] for row in cursor.fetchall()]
+
+        if not ids:
+            return jsonify({"status": "No valid messages found for training"})
+
+        ids_str = ",".join([f"'{id}'" for id in ids])
+        cursor.execute(f"SELECT message FROM messages WHERE id IN ({ids_str})")
+        texts = [row[0] for row in cursor.fetchall()]
+        labels = [1] * len(texts)  # Only "approprié" for now
+
+        from datasets import Dataset
+        train_dataset = Dataset.from_dict({"text": texts, "label": labels})
+
+        def tokenize(batch):
+            return tokenizer(batch["text"], padding=True, truncation=True, max_length=512)
+
+        train_dataset = train_dataset.map(tokenize, batched=True)
+
+        training_args = TrainingArguments(
+            output_dir="/app/saved_model",
+            num_train_epochs=1,
+            per_device_train_batch_size=8,
+            save_steps=10,
+            save_total_limit=1,
+            logging_dir="/app/logs",
+            logging_steps=10,
+            remove_unused_columns=False
+        )
+
+        trainer = Trainer(
+            model=model,
+            args=training_args,
+            train_dataset=train_dataset
+        )
+
+        trainer.train()
+        trainer.save_model("/app/saved_model")
+        return jsonify({"status": "Model retrained and saved successfully"})
+
+    except Exception as e:
+        flask.logger.error(f"Training failed: {str(e)}")
+        return jsonify({"error": str(e)})
+
 
 if __name__ == '__main__':
     flask.run(host='0.0.0.0', port=5052, debug=True)
