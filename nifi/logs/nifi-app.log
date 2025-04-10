@@ -132,3 +132,97 @@
 2025-04-10 12:16:25,159 INFO [Cleanup Archive for default] o.a.n.c.repository.FileSystemRepository Archive cleanup completed for container default; will now allow writing to this container. Bytes used = 457.46 GB, bytes free = 17.26 GB, capacity = 474.72 GB
 2025-04-10 12:16:41,272 INFO [Checkpoint FlowFile Repository] o.a.n.c.r.WriteAheadFlowFileRepository Initiating checkpoint of FlowFile Repository
 2025-04-10 12:16:41,272 INFO [Checkpoint FlowFile Repository] o.a.n.c.r.WriteAheadFlowFileRepository Successfully checkpointed FlowFile Repository with 0 records in 0 milliseconds
+2025-04-10 12:17:01,273 INFO [Checkpoint FlowFile Repository] o.a.n.c.r.WriteAheadFlowFileRepository Initiating checkpoint of FlowFile Repository
+2025-04-10 12:17:01,273 INFO [Checkpoint FlowFile Repository] o.a.n.c.r.WriteAheadFlowFileRepository Successfully checkpointed FlowFile Repository with 0 records in 0 milliseconds
+2025-04-10 12:17:21,272 INFO [Checkpoint FlowFile Repository] o.a.n.c.r.WriteAheadFlowFileRepository Initiating checkpoint of FlowFile Repository
+2025-04-10 12:17:21,272 INFO [Checkpoint FlowFile Repository] o.a.n.c.r.WriteAheadFlowFileRepository Successfully checkpointed FlowFile Repository with 0 records in 0 milliseconds
+2025-04-10 12:17:31,488 INFO [Cleanup Archive for default] o.a.n.c.repository.FileSystemRepository Successfully deleted 0 files (0 bytes) from archive
+2025-04-10 12:17:31,490 INFO [Cleanup Archive for default] o.a.n.c.repository.FileSystemRepository Archive cleanup completed for container default; will now allow writing to this container. Bytes used = 457.45 GB, bytes free = 17.27 GB, capacity = 474.72 GB
+2025-04-10 12:17:41,272 INFO [Checkpoint FlowFile Repository] o.a.n.c.r.WriteAheadFlowFileRepository Initiating checkpoint of FlowFile Repository
+2025-04-10 12:17:41,274 INFO [Checkpoint FlowFile Repository] o.a.n.c.r.WriteAheadFlowFileRepository Successfully checkpointed FlowFile Repository with 0 records in 0 milliseconds
+2025-04-10 12:17:41,374 INFO [ShutdownCommand] o.a.nifi.runtime.command.ShutdownCommand Application shutdown started
+2025-04-10 12:17:41,379 INFO [ShutdownCommand] o.a.n.runtime.StandardManagementServer Management Server stopped
+2025-04-10 12:17:41,382 INFO [ShutdownCommand] org.eclipse.jetty.server.Server Stopped oejs.Server@1f95881a{STOPPING}[12.0.16,sto=0]
+2025-04-10 12:17:41,396 INFO [ShutdownCommand] o.eclipse.jetty.server.AbstractConnector Stopped ServerConnector@65d8f9d2{SSL, (ssl, alpn, h2, http/1.1)}{91089a03562f:8443}
+2025-04-10 12:17:41,469 INFO [ShutdownCommand] o.e.j.ee10.servlet.ServletContextHandler Stopped oeje10w.WebAppContext@5b4eaf8b{/nifi,/nifi,b=null,a=AVAILABLE,h=oeje10s.SessionHandler@1618a359{STOPPED}}{./work/nar/extensions/nifi-server-nar-2.3.0.nar-unpacked/NAR-INF/bundled-dependencies/nifi-ui-2.3.0.war}
+2025-04-10 12:17:41,525 INFO [ShutdownCommand] o.a.n.w.c.ApplicationStartupContextListener Flow Service shutdown started
+2025-04-10 12:17:41,526 INFO [ShutdownCommand] o.apache.nifi.controller.FlowController Initiating shutdown of FlowController...
+2025-04-10 12:17:41,537 INFO [ShutdownCommand] o.a.n.c.s.StandardProcessScheduler Stopping ConsumeKafka[id=1f2a8c77-0196-1000-968b-0ef03ff30d13]
+2025-04-10 12:17:41,548 INFO [Timer-Driven Process Thread-1] o.a.n.c.s.TimerDrivenSchedulingAgent Stopped scheduling ConsumeKafka[id=1f2a8c77-0196-1000-968b-0ef03ff30d13] to run
+2025-04-10 12:17:41,554 INFO [ShutdownCommand] o.a.n.c.s.StandardProcessScheduler Stopping InvokeHTTP[id=1f2b11c2-0196-1000-3365-30f95ee39a1d]
+2025-04-10 12:17:41,554 INFO [Timer-Driven Process Thread-1] o.a.n.c.s.TimerDrivenSchedulingAgent Stopped scheduling InvokeHTTP[id=1f2b11c2-0196-1000-3365-30f95ee39a1d] to run
+2025-04-10 12:17:41,556 INFO [Timer-Driven Process Thread-1] o.a.n.controller.StandardProcessorNode InvokeHTTP[id=1f2b11c2-0196-1000-3365-30f95ee39a1d] has completely stopped. Completing any associated Futures.
+2025-04-10 12:17:41,560 INFO [ShutdownCommand] o.a.n.c.s.StandardProcessScheduler Stopping InvokeHTTP[id=1c414144-0196-1000-7eec-3c957fb6ca25]
+2025-04-10 12:17:41,561 INFO [Timer-Driven Process Thread-8] o.a.n.c.s.TimerDrivenSchedulingAgent Stopped scheduling InvokeHTTP[id=1c414144-0196-1000-7eec-3c957fb6ca25] to run
+2025-04-10 12:17:41,562 INFO [ShutdownCommand] o.a.n.c.s.StandardProcessScheduler Stopping ConsumeKafka[id=1c401639-0196-1000-70c9-c15fcc59cae4]
+2025-04-10 12:17:41,562 INFO [Timer-Driven Process Thread-8] o.a.n.controller.StandardProcessorNode InvokeHTTP[id=1c414144-0196-1000-7eec-3c957fb6ca25] has completely stopped. Completing any associated Futures.
+2025-04-10 12:17:41,562 INFO [Timer-Driven Process Thread-5] o.a.n.c.s.TimerDrivenSchedulingAgent Stopped scheduling ConsumeKafka[id=1c401639-0196-1000-70c9-c15fcc59cae4] to run
+2025-04-10 12:17:41,564 INFO [ShutdownCommand] o.a.n.c.s.StandardProcessScheduler Stopping ConsumeKafka[id=1c42f79a-0196-1000-8cc9-f84ae73b756c]
+2025-04-10 12:17:41,564 INFO [Timer-Driven Process Thread-6] o.a.n.c.s.TimerDrivenSchedulingAgent Stopped scheduling ConsumeKafka[id=1c42f79a-0196-1000-8cc9-f84ae73b756c] to run
+2025-04-10 12:17:41,565 INFO [ShutdownCommand] o.a.n.c.s.StandardProcessScheduler Stopping InvokeHTTP[id=1c447165-0196-1000-e326-5f476ebec52b]
+2025-04-10 12:17:41,566 INFO [Timer-Driven Process Thread-8] o.a.n.c.s.TimerDrivenSchedulingAgent Stopped scheduling InvokeHTTP[id=1c447165-0196-1000-e326-5f476ebec52b] to run
+2025-04-10 12:17:41,566 INFO [ShutdownCommand] o.a.n.c.s.StandardProcessScheduler Stopping ConsumeKafka[id=1c3afee2-0196-1000-559e-e9398eaaf2a7]
+2025-04-10 12:17:41,566 INFO [Timer-Driven Process Thread-8] o.a.n.controller.StandardProcessorNode InvokeHTTP[id=1c447165-0196-1000-e326-5f476ebec52b] has completely stopped. Completing any associated Futures.
+2025-04-10 12:17:41,567 INFO [Timer-Driven Process Thread-4] o.a.n.c.s.TimerDrivenSchedulingAgent Stopped scheduling ConsumeKafka[id=1c3afee2-0196-1000-559e-e9398eaaf2a7] to run
+2025-04-10 12:17:41,568 INFO [ShutdownCommand] o.a.n.c.s.StandardProcessScheduler Stopping InvokeHTTP[id=1c3c7362-0196-1000-6875-aecf913e64f0]
+2025-04-10 12:17:41,568 INFO [Timer-Driven Process Thread-1] o.a.n.c.s.TimerDrivenSchedulingAgent Stopped scheduling InvokeHTTP[id=1c3c7362-0196-1000-6875-aecf913e64f0] to run
+2025-04-10 12:17:41,569 INFO [Timer-Driven Process Thread-1] o.a.n.controller.StandardProcessorNode InvokeHTTP[id=1c3c7362-0196-1000-6875-aecf913e64f0] has completely stopped. Completing any associated Futures.
+2025-04-10 12:17:42,173 INFO [Timer-Driven Process Thread-6] o.a.k.c.c.i.ConsumerRebalanceListenerInvoker [Consumer clientId=consumer-send_message-2, groupId=send_message] Revoke previously assigned partitions send_message-0
+2025-04-10 12:17:42,173 INFO [Timer-Driven Process Thread-5] o.a.k.c.c.i.ConsumerRebalanceListenerInvoker [Consumer clientId=consumer-ia_message-1, groupId=ia_message] Revoke previously assigned partitions ia_message-0
+2025-04-10 12:17:42,173 INFO [Timer-Driven Process Thread-1] o.a.k.c.c.i.ConsumerRebalanceListenerInvoker [Consumer clientId=consumer-get_all_messages-3, groupId=get_all_messages] Revoke previously assigned partitions get_all_message-0
+2025-04-10 12:17:42,175 INFO [Timer-Driven Process Thread-1] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-get_all_messages-3, groupId=get_all_messages] Member consumer-get_all_messages-3-3e7759fd-9f20-4b8a-9eec-74f31a0d524c sending LeaveGroup request to coordinator kafka:9092 (id: 2147482646 rack: null) due to the consumer is being closed
+2025-04-10 12:17:42,175 INFO [Timer-Driven Process Thread-6] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-send_message-2, groupId=send_message] Member consumer-send_message-2-cb2a4dbb-2ef3-4a77-a456-42704a82d613 sending LeaveGroup request to coordinator kafka:9092 (id: 2147482646 rack: null) due to the consumer is being closed
+2025-04-10 12:17:42,180 INFO [Timer-Driven Process Thread-6] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-send_message-2, groupId=send_message] Resetting generation and member id due to: consumer pro-actively leaving the group
+2025-04-10 12:17:42,175 INFO [Timer-Driven Process Thread-5] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-ia_message-1, groupId=ia_message] Member consumer-ia_message-1-35436ce4-4875-4905-bf64-9f86dac05346 sending LeaveGroup request to coordinator kafka:9092 (id: 2147482646 rack: null) due to the consumer is being closed
+2025-04-10 12:17:42,179 INFO [Timer-Driven Process Thread-1] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-get_all_messages-3, groupId=get_all_messages] Resetting generation and member id due to: consumer pro-actively leaving the group
+2025-04-10 12:17:42,182 INFO [Timer-Driven Process Thread-6] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-send_message-2, groupId=send_message] Request joining group due to: consumer pro-actively leaving the group
+2025-04-10 12:17:42,183 INFO [Timer-Driven Process Thread-1] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-get_all_messages-3, groupId=get_all_messages] Request joining group due to: consumer pro-actively leaving the group
+2025-04-10 12:17:42,182 INFO [Timer-Driven Process Thread-5] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-ia_message-1, groupId=ia_message] Resetting generation and member id due to: consumer pro-actively leaving the group
+2025-04-10 12:17:42,183 INFO [Timer-Driven Process Thread-5] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-ia_message-1, groupId=ia_message] Request joining group due to: consumer pro-actively leaving the group
+2025-04-10 12:17:42,268 INFO [Timer-Driven Process Thread-8] o.a.k.c.c.i.ConsumerRebalanceListenerInvoker [Consumer clientId=consumer-get_users-4, groupId=get_users] Revoke previously assigned partitions get_users-0
+2025-04-10 12:17:42,269 INFO [Timer-Driven Process Thread-8] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-get_users-4, groupId=get_users] Member consumer-get_users-4-026693ae-e5f0-4175-85ac-dcf343054c94 sending LeaveGroup request to coordinator kafka:9092 (id: 2147482646 rack: null) due to the consumer is being closed
+2025-04-10 12:17:42,270 INFO [Timer-Driven Process Thread-8] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-get_users-4, groupId=get_users] Resetting generation and member id due to: consumer pro-actively leaving the group
+2025-04-10 12:17:42,271 INFO [Timer-Driven Process Thread-8] o.a.k.c.c.internals.ConsumerCoordinator [Consumer clientId=consumer-get_users-4, groupId=get_users] Request joining group due to: consumer pro-actively leaving the group
+2025-04-10 12:17:42,322 INFO [Timer-Driven Process Thread-6] org.apache.kafka.common.metrics.Metrics Metrics scheduler closed
+2025-04-10 12:17:42,323 INFO [Timer-Driven Process Thread-6] org.apache.kafka.common.metrics.Metrics Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2025-04-10 12:17:42,323 INFO [Timer-Driven Process Thread-6] org.apache.kafka.common.metrics.Metrics Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+2025-04-10 12:17:42,325 INFO [Timer-Driven Process Thread-6] org.apache.kafka.common.metrics.Metrics Metrics reporters closed
+2025-04-10 12:17:42,333 INFO [Timer-Driven Process Thread-8] org.apache.kafka.common.metrics.Metrics Metrics scheduler closed
+2025-04-10 12:17:42,333 INFO [Timer-Driven Process Thread-8] org.apache.kafka.common.metrics.Metrics Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2025-04-10 12:17:42,333 INFO [Timer-Driven Process Thread-8] org.apache.kafka.common.metrics.Metrics Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+2025-04-10 12:17:42,334 INFO [Timer-Driven Process Thread-8] org.apache.kafka.common.metrics.Metrics Metrics reporters closed
+2025-04-10 12:17:42,341 INFO [Timer-Driven Process Thread-6] o.a.kafka.common.utils.AppInfoParser App info kafka.consumer for consumer-send_message-2 unregistered
+2025-04-10 12:17:42,341 INFO [Timer-Driven Process Thread-6] o.a.n.controller.StandardProcessorNode ConsumeKafka[id=1c3afee2-0196-1000-559e-e9398eaaf2a7] has completely stopped. Completing any associated Futures.
+2025-04-10 12:17:42,342 INFO [Timer-Driven Process Thread-8] o.a.kafka.common.utils.AppInfoParser App info kafka.consumer for consumer-get_users-4 unregistered
+2025-04-10 12:17:42,342 INFO [Timer-Driven Process Thread-8] o.a.n.controller.StandardProcessorNode ConsumeKafka[id=1c401639-0196-1000-70c9-c15fcc59cae4] has completely stopped. Completing any associated Futures.
+2025-04-10 12:17:42,390 INFO [Timer-Driven Process Thread-1] org.apache.kafka.common.metrics.Metrics Metrics scheduler closed
+2025-04-10 12:17:42,391 INFO [Timer-Driven Process Thread-1] org.apache.kafka.common.metrics.Metrics Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2025-04-10 12:17:42,391 INFO [Timer-Driven Process Thread-1] org.apache.kafka.common.metrics.Metrics Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+2025-04-10 12:17:42,392 INFO [Timer-Driven Process Thread-1] org.apache.kafka.common.metrics.Metrics Metrics reporters closed
+2025-04-10 12:17:42,402 INFO [Timer-Driven Process Thread-1] o.a.kafka.common.utils.AppInfoParser App info kafka.consumer for consumer-get_all_messages-3 unregistered
+2025-04-10 12:17:42,402 INFO [Timer-Driven Process Thread-1] o.a.n.controller.StandardProcessorNode ConsumeKafka[id=1c42f79a-0196-1000-8cc9-f84ae73b756c] has completely stopped. Completing any associated Futures.
+2025-04-10 12:17:42,460 INFO [Timer-Driven Process Thread-5] org.apache.kafka.common.metrics.Metrics Metrics scheduler closed
+2025-04-10 12:17:42,460 INFO [Timer-Driven Process Thread-5] org.apache.kafka.common.metrics.Metrics Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2025-04-10 12:17:42,460 INFO [Timer-Driven Process Thread-5] org.apache.kafka.common.metrics.Metrics Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+2025-04-10 12:17:42,461 INFO [Timer-Driven Process Thread-5] org.apache.kafka.common.metrics.Metrics Metrics reporters closed
+2025-04-10 12:17:42,468 INFO [Timer-Driven Process Thread-5] o.a.kafka.common.utils.AppInfoParser App info kafka.consumer for consumer-ia_message-1 unregistered
+2025-04-10 12:17:42,468 INFO [Timer-Driven Process Thread-5] o.a.n.controller.StandardProcessorNode ConsumeKafka[id=1f2a8c77-0196-1000-968b-0ef03ff30d13] has completely stopped. Completing any associated Futures.
+2025-04-10 12:17:42,469 INFO [ShutdownCommand] o.apache.nifi.controller.FlowController Initiated graceful shutdown of flow controller...waiting up to 10 seconds
+2025-04-10 12:17:42,471 INFO [ShutdownCommand] o.apache.nifi.controller.FlowController Controller has been terminated successfully.
+2025-04-10 12:17:42,472 INFO [ShutdownCommand] o.apache.nifi.py4j.StandardPythonBridge Shutting down Python Server
+2025-04-10 12:17:42,472 INFO [ShutdownCommand] org.apache.nifi.py4j.PythonProcess Shutting down Python Process Process[pid=191, exitValue="not exited"]
+2025-04-10 12:17:42,487 INFO [ShutdownCommand] o.apache.nifi.py4j.StandardPythonBridge Successfully shutdown Python Server
+2025-04-10 12:17:42,494 INFO [ForkJoinPool.commonPool-worker-1] org.apache.nifi.py4j.PythonProcess Python Process Process[pid=191, exitValue=137] exited with code 137
+2025-04-10 12:17:42,541 INFO [ShutdownCommand] o.a.n.w.c.ApplicationStartupContextListener Flow Service shutdown completed
+2025-04-10 12:17:42,542 INFO [ShutdownCommand] o.e.j.s.handler.ContextHandler._nifi_api Closing Spring root WebApplicationContext
+2025-04-10 12:17:42,632 INFO [ShutdownCommand] o.a.n.a.service.EntityStoreAuditService Environment closed
+2025-04-10 12:17:42,671 INFO [ShutdownCommand] o.e.j.ee10.servlet.ServletContextHandler Stopped oeje10w.WebAppContext@5da1a97f{nifi-api,/nifi-api,b=null,a=AVAILABLE,h=oeje10s.SessionHandler@5819ee0f{STOPPED}}{./work/nar/extensions/nifi-server-nar-2.3.0.nar-unpacked/NAR-INF/bundled-dependencies/nifi-web-api-2.3.0.war}
+2025-04-10 12:17:42,688 INFO [ShutdownCommand] o.e.j.ee10.servlet.ServletContextHandler Stopped oeje10w.WebAppContext@d1d85d0{/nifi-update-attribute-ui-2.3.0,/nifi-update-attribute-ui-2.3.0,b=null,a=AVAILABLE,h=oeje10s.SessionHandler@48b9773b{STOPPED}}{./work/nar/extensions/nifi-update-attribute-nar-2.3.0.nar-unpacked/NAR-INF/bundled-dependencies/nifi-update-attribute-ui-2.3.0.war}
+2025-04-10 12:17:42,692 INFO [ShutdownCommand] o.e.j.s.h.C._nifi_standard_content_viewer_2_3_0 Destroying Spring FrameworkServlet 'dispatcherServlet'
+2025-04-10 12:17:42,694 INFO [ShutdownCommand] o.e.j.s.h.C._nifi_standard_content_viewer_2_3_0 Closing Spring root WebApplicationContext
+2025-04-10 12:17:42,772 INFO [ShutdownCommand] o.e.j.ee10.servlet.ServletContextHandler Stopped oeje10w.WebAppContext@3d104c9b{/nifi-standard-content-viewer-2.3.0,/nifi-standard-content-viewer-2.3.0,b=null,a=AVAILABLE,h=oeje10s.SessionHandler@30437e9c{STOPPED}}{./work/nar/extensions/nifi-standard-content-viewer-nar-2.3.0.nar-unpacked/NAR-INF/bundled-dependencies/nifi-standard-content-viewer-2.3.0.war}
+2025-04-10 12:17:42,787 INFO [ShutdownCommand] o.e.j.ee10.servlet.ServletContextHandler Stopped oeje10w.WebAppContext@4ea17147{/nifi-jolt-transform-json-ui-2.3.0,/nifi-jolt-transform-json-ui-2.3.0,b=null,a=AVAILABLE,h=oeje10s.SessionHandler@423ed3b5{STOPPED}}{./work/nar/extensions/nifi-jolt-nar-2.3.0.nar-unpacked/NAR-INF/bundled-dependencies/nifi-jolt-transform-json-ui-2.3.0.war}
+2025-04-10 12:17:42,790 INFO [ShutdownCommand] org.apache.nifi.nar.NarAutoLoaderTask Stopping NAR Auto-loader
+2025-04-10 12:17:42,790 INFO [ShutdownCommand] org.apache.nifi.nar.NarAutoLoader NAR Auto-Loader stopped
+2025-04-10 12:17:42,793 INFO [ShutdownCommand] o.a.n.f.r.CompositeExternalResourceProviderService External Resource Provider Service is stopped
+2025-04-10 12:17:42,793 INFO [ShutdownCommand] o.a.nifi.runtime.command.ShutdownCommand Application shutdown completed
