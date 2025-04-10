@@ -342,3 +342,4 @@ Caused by: org.apache.nifi.authentication.exception.InvalidLoginCredentialsExcep
 2025-04-10 11:19:59,576 INFO [main] o.a.n.a.single.user.SingleUserAuthorizer Initializing Authorizer
 2025-04-10 11:20:00,197 INFO [main] o.a.n.a.single.user.SingleUserAuthorizer Configuring Authorizer
 2025-04-10 11:20:19,156 INFO [main] o.a.n.w.s.c.KeyPairGeneratorConfiguration Configured Key Pair Algorithm [Ed25519] for JSON Web Signatures
+2025-04-10 12:17:42,635 INFO [ShutdownCommand] o.a.n.a.single.user.SingleUserAuthorizer Destroying Authorizer
